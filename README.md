@@ -5,7 +5,7 @@ Seperates groups of pixels into a 2d vector of doubly linked nodes, then rearran
 
 Example of implementation:
 Before:
-![Unorganized Picture](/images/given-puzzle.png)
+![Unorganized Picture](/images/123456789.png)
 
 After:
 ![Organized Picture](/images/out-main-puzzle.png)
