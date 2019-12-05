@@ -19,41 +19,38 @@ Grid::~Grid(){ /*your code here*/
  * Rotate headOfCol_ if necessary.
  */
 void Grid::rotateR(int r, int count) { /* your code here */
-    r = r % numRows();
-    int remainingRotations = count;
+    r %= numRows();
+    if (r < 0 || r >= headOfRow_.size())
+    {
+        return;
+    }
+    count %= headOfCol_.size();
 
-    //--Set surrounding nodes to new head node--
+    Node *center = headOfRow_[r];
+    Node *top = center->up;
+    Node *dow = center->down;
 
-    int nodeSwitches = 0;
-    int colIndex = 0;
-    while (nodeSwitches < (int) headOfCol_.size()) {
-        //Set first column nodes to new head node
-        
-        headOfRow_[r]->up->down = headOfRow_[r]->left;
-        headOfRow_[r]->down->up = headOfRow_[r]->left;
-
-        //Set old head node to new last column nodes
-        headOfRow_[r]->up = headOfRow_[r]->up->right;
-        headOfRow_[r]->down = headOfRow_[r]->down->right;
-
-        if (r == 0) {
-            headOfCol_[colIndex] = headOfCol_[colIndex]->left;
+    for (int i = 0; i < headOfCol_.size(); i++)
+    {
+        center = top->down;
+        for (int j = 0; j < count; j++)
+        {
+            center = center->left;
         }
+        top->down = center;
+        center->up = top;
+        dow->up = center;
+        center->down = dow;
+        top = top->right;
+        dow = dow->right;
 
-        //Set headOfRow to next node, dont if the next node is desired new head node
-        if (nodeSwitches < (int) headOfCol_.size()-1) {
-            headOfRow_[r] = headOfRow_[r]->right;
+        if (r == 0)
+        {
+            headOfCol_[i] = center;
         }
-        
-
-        nodeSwitches++;
-        colIndex++;
     }
 
-    remainingRotations--;
-    if (remainingRotations != 0) {
-        rotateR(r,remainingRotations);
-    }
+    headOfRow_[r] = center->right;
 }
 
 /**
@@ -63,41 +60,33 @@ void Grid::rotateR(int r, int count) { /* your code here */
  * Rotate headOfRow_ if necessary.
  */
 void Grid::rotateC(int c, int count) { /* your code here */
-    c = c % numCols();
-    int remainingRotations = count;
-
-    //--Set surrounding nodes to new head node--
-
-    int nodeSwitches = 0;
-    int rowIndex = 0;
-    while (nodeSwitches < (int) headOfRow_.size()) {
-        //Set first column nodes to new head node
-        
-        headOfCol_[c]->left->right = headOfCol_[c]->up;
-        headOfCol_[c]->right->left = headOfCol_[c]->up;
-
-        //Set old head node to new last row nodes
-        headOfCol_[c]->left = headOfCol_[c]->left->down;
-        headOfCol_[c]->right = headOfCol_[c]->right->down;
-
-        if (c == 0) {
-            headOfRow_[rowIndex] = headOfRow_[rowIndex]->up;
-        }
-
-        //Set headOfCol to next node, dont if the next node is desired new head node
-        if (nodeSwitches < (int) headOfRow_.size()-1) {
-            headOfCol_[c] = headOfCol_[c]->down;
-        }
-        
-
-        nodeSwitches++;
-        rowIndex++;
+    c %= numCols();
+    if (headOfCol_.size() <= c || c < 0)
+    {
+        return;
     }
+    count %= headOfRow_.size();
+    Node *center = headOfCol_[c];
+    Node *right = center->right;
+    Node *left = center->left;
 
-    remainingRotations--;
-    if (remainingRotations != 0) {
-        rotateR(c,remainingRotations);
+    for (int i = 0; i < headOfRow_.size(); i++)
+    {
+        center = right->left;
+        for (int j = 0; j < count; j++)
+        {
+            center = center->up;
+        }
+        right->left = center;
+        center->right = right;
+        left->right = center;
+        center->left = left;
+        right = right->down;
+        left = left->down;
+        if (c == 0)
+            headOfRow_[i] = center;
     }
+    headOfCol_[c] = center->down;
 }
 
 
@@ -108,16 +97,21 @@ void Grid::rotateC(int c, int count) { /* your code here */
  * After clear() the grid represents an empty grid.
  */
 void Grid::clear() { /*your code here*/
-    for (int i = 0; i < (int) headOfRow_.size(); i++) {
-        headOfRow_[i] = headOfRow_[i]->right;
-        delete(headOfRow_[i]->left);
-        if (headOfRow_[i]->right != NULL) {
-            headOfRow_[i] = headOfRow_[i]->right;
-            delete(headOfRow_[i]->left);
-        } else {
-            delete(headOfRow_[i]);
-            headOfRow_[i] = NULL;
+    for (int i = 0; i < headOfRow_.size(); i++)
+    {
+        Node *dummy = headOfRow_[i];
+        if (dummy == NULL)
+        {
+            continue;
         }
+        Node *next = dummy->right;
+        while (next != dummy)
+        {
+            next = next->right;
+            delete next->left;
+        }
+        delete next;
+        headOfRow_[i] = NULL;
     }
     bwidth_ = 0;
     bheight_ = 0;
@@ -132,14 +126,41 @@ void Grid::clear() { /*your code here*/
  * constructor and the assignment operator for Grids.
  */
 void Grid::copy(Grid const& other) { /*your code here*/
-    
-
-
+   int row = other.numRows();
+    int col = other.numCols();
+    vector<vector<Node *>> nodes;
+    for (int i = 0; i < row; i++)
+    {
+        vector<Node *> hold;
+        Node *dummy = other.headOfRow_[i];
+        for (int j = 0; j < col; j++)
+        {
+            Node *temp = new Node(dummy->block);
+            hold.push_back(temp);
+            dummy = dummy->right;
+        }
+        nodes.push_back(hold);
+    }
+    //C++ still is incredibly annoying.
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            Node *node = nodes[i][j];
+            node->up = nodes[(i == 0) ? row - 1 : i - 1][j];
+            node->down = nodes[(i == row - 1) ? 0 : i + 1][j];
+            node->left = nodes[i][(j == 0) ? col - 1 : j - 1];
+            node->right = nodes[i][(j == col - 1) ? 0 : j + 1];
+        }
+    }
+    for (int i = 0; i < other.numRows(); i++)
+    {
+        headOfRow_.push_back(nodes[i][0]);
+    }
+    for (int j = 0; j < other.numCols(); j++)
+    {
+        headOfCol_.push_back(nodes[0][j]);
+    }
     bheight_ = other.bheight_;
     bwidth_ = other.bwidth_;
-    
-    
-    
-    
-
 }
