@@ -23,40 +23,39 @@ using namespace std;
  * that does solve the puzzle. 
  * COMPLETE FOR PA1
  */
-#define PUZZLE_SOLUTION  g.rotateC(1, 1);\
-   g.rotateR(0, 1);\
-   g.rotateC(1, 1);\
-   g.rotateR(0, 2);\
-   g.rotateC(1, 2);
-  
-
-/**
- * Grid: This is a container class for blocks. It is implemented
- * as a two-dimensional circular doubly-linked list of nodes, each of
- * which contains a block.
- *
- * You should not remove anything from this class definition, but
- * you may find it helpful to add your own private helper functions to it.
+#define PUZZLE_SOLUTION                                                    \
+   g.rotateC(1, 1);                                                        \
+   g.rotateR(0, 1);                                                        \
+   g.rotateC(1, 1);                                                        \
+   g.rotateR(0, 2);                                                        \
+   g.rotateC(1, 2);                                                        \
+/**                                                                        \
+ * Grid: This is a container class for blocks. It is implemented           \
+ * as a two-dimensional circular doubly-linked list of nodes, each of      \
+ * which contains a block.                                                 \
+ *                                                                         \
+ * You should not remove anything from this class definition, but          \
+ * you may find it helpful to add your own private helper functions to it. \
  */
-class Grid {
+class Grid
+{
 private:
-
    /**
     * The Node class is private to the Grid class via the principle of
     * encapsulation---the end user does not need to know our node-based
     * implementation details.
     */
-   class Node {
+   class Node
+   {
    public:
-      Node(); // default constructor--GIVEN
-      Node(const Block & ndata); // data provided constructor--GIVEN
+      Node();                   // default constructor--GIVEN
+      Node(const Block &ndata); // data provided constructor--GIVEN
 
       Node *left, *right, *up, *down; // ptr to nbr nodes in grid
-      const Block block; // block held by Node. const for this PA
+      const Block block;              // block held by Node. const for this PA
    };
 
 public:
-
    /* =============== public given functions ====================*/
    /**
     * Default constructor.
@@ -72,7 +71,7 @@ public:
     * GIVEN
     * @see grid_given.cpp
     */
-   Grid(PNG & imIn, int nCols, int nRows);
+   Grid(PNG &imIn, int nCols, int nRows);
 
    /**
     * Copy constructor for a Grid.
@@ -84,7 +83,7 @@ public:
     *
     * @param other The Grid we are copying.
     */
-   Grid(const Grid & other);
+   Grid(const Grid &other);
 
    /**
     * Overloaded assignment operator for Grids.
@@ -96,7 +95,7 @@ public:
     *
     * @param rhs The right hand side of the assignment statement.
     */
-   Grid & operator=(const Grid & rhs);
+   Grid &operator=(const Grid &rhs);
 
    /**
     * Accessor functions.
@@ -144,7 +143,6 @@ public:
     */
    void rotateC(int c, int count);
 
-
    /* =============== end of public PA1 FUNCTIONS =========================*/
 
 private:
@@ -157,8 +155,8 @@ private:
    std::vector<Node *> headOfRow_; // ptr to first Node in each row
    std::vector<Node *> headOfCol_; // ptr to first Node in each col
 
-   int bheight_;	// height of blocks in grid.
-   int bwidth_;		// width of blocks in grid.
+   int bheight_; // height of blocks in grid.
+   int bwidth_;  // width of blocks in grid.
 
    /**
     * Private helper functions.
@@ -182,7 +180,7 @@ private:
     * COMPLETE FOR PA1.
     * @param other, the Grid to be copied.
     */
-   void copy(const Grid & other);
+   void copy(const Grid &other);
 
    /* =================== end of private PA1 functions ============== */
 };

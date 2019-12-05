@@ -1,14 +1,15 @@
+
 #include "grid.h"
 #include "grid_given.cpp"
 
 // PA1 functions
 
-
 /**
  * Destroys the current Grid. This function should ensure that
  * memory does not leak on destruction of a grid.
  */
-Grid::~Grid(){ /*your code here*/
+Grid::~Grid()
+{ /*your code here*/
     clear();
 }
 
@@ -18,7 +19,8 @@ Grid::~Grid(){ /*your code here*/
  * in grid g should be DEABC after the call g.rotateR(r, 2).
  * Rotate headOfCol_ if necessary.
  */
-void Grid::rotateR(int r, int count) { /* your code here */
+void Grid::rotateR(int r, int count)
+{ /* your code here */
     r %= numRows();
     if (r < 0 || r >= headOfRow_.size())
     {
@@ -59,7 +61,8 @@ void Grid::rotateR(int r, int count) { /* your code here */
  * in grid g should be DEABC after the call g.rotateC(c, 2). 
  * Rotate headOfRow_ if necessary.
  */
-void Grid::rotateC(int c, int count) { /* your code here */
+void Grid::rotateC(int c, int count)
+{ /* your code here */
     c %= numCols();
     if (headOfCol_.size() <= c || c < 0)
     {
@@ -89,14 +92,14 @@ void Grid::rotateC(int c, int count) { /* your code here */
     headOfCol_[c] = center->down;
 }
 
-
 /**
  * Destroys all dynamically allocated memory associated with the
  * current Grid class. Clears headOfRow_ and headOfCol_ vectors.
  * Sets bwidth_, bheight_ to zero.
  * After clear() the grid represents an empty grid.
  */
-void Grid::clear() { /*your code here*/
+void Grid::clear()
+{ /*your code here*/
     for (int i = 0; i < headOfRow_.size(); i++)
     {
         Node *dummy = headOfRow_[i];
@@ -117,7 +120,6 @@ void Grid::clear() { /*your code here*/
     bheight_ = 0;
 }
 
-
 /**
  * Makes the current Grid a copy of the "other" Grid.
  * The dimensions should be the same.  The Nodes should
@@ -125,8 +127,9 @@ void Grid::clear() { /*your code here*/
  * allocated. This function is used in both the copy
  * constructor and the assignment operator for Grids.
  */
-void Grid::copy(Grid const& other) { /*your code here*/
-   int row = other.numRows();
+void Grid::copy(Grid const &other)
+{ /*your code here*/
+    int row = other.numRows();
     int col = other.numCols();
     vector<vector<Node *>> nodes;
     for (int i = 0; i < row; i++)
